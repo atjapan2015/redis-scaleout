@@ -9,6 +9,10 @@ variable "region" {}
 variable "compartment_ocid" {}
 variable "availablity_domain_name" {}
 
+variable "ssh_public_key" {
+  default = ""
+}
+
 variable "redis_standalone_master_count" {
   description = "Number of master"
   type        = number
@@ -28,7 +32,7 @@ variable "redis_masterslave_replica_count" {
 }
 
 variable "redis_rediscluster_shared_count" {
-  description = "Number of shareds"
+  description = "Number of shards"
   type        = number
   default     = 3
 }
@@ -43,6 +47,14 @@ variable "redis_deployment_type" {
   description = "Redis deployment type, available values [\"Standalone\", \"Master Slave\", \"Redis Cluster\"]"
   type        = string
   default     = "Standalone"
+}
+
+variable "redis_server" {
+  default = "138.2.116.175"
+}
+
+variable "redis_password" {
+  default = "redis"
 }
 
 variable "redis_prefix" {
@@ -87,7 +99,16 @@ variable "is_enable_backup" {
   default     = false
 }
 
-variable "ssh_public_key" {
+
+variable "s3_bucket_name" {
+  default = ""
+}
+
+variable "s3_access_key" {
+  default = ""
+}
+
+variable "s3_secret_key" {
   default = ""
 }
 
@@ -124,14 +145,6 @@ variable "grafana_user" {
 }
 
 variable "grafana_password" {
-  default = ""
-}
-
-variable "s3_access_key" {
-  default = ""
-}
-
-variable "s3_secret_key" {
   default = ""
 }
 

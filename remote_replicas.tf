@@ -29,11 +29,7 @@ resource "null_resource" "redis_replica_bootstrap" {
     }
     inline = [
       "chmod +x ~/redis_bootstrap_replica.sh",
-      "sudo ~/redis_bootstrap_replica.sh",
-      "sudo chmod 777 /etc/redis.conf",
-      "if [[ '${var.redis_deployment_type}' == 'Master Slave' ]] && [[ `hostname -s` != '${data.oci_core_vnic.redis_master_vnic[0].hostname_label}' ]]; then echo 'slaveof ${data.oci_core_vnic.redis_master_vnic[0].public_ip_address} ${var.redis_port1}' >> /etc/redis.conf; fi",
-      "sudo chmod 644 /etc/redis.conf",
-      "if [[ ${var.redis_config_is_use_rdb} == true ]] && [[ ${var.is_enable_backup} == true ]]; then sudo crontab /u01/redis_backup_tools/redis_rdb_copy_hourly_daily.cron; fi"
+      "sudo ~/redis_bootstrap_replica.sh"
     ]
   }
 }
