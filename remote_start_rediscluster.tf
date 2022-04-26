@@ -115,8 +115,8 @@ resource "null_resource" "redis_master_add_masternode_rediscluster" {
       "for newslave in $(cat /home/opc/master_list.sh); do sudo -u root /usr/local/bin/redis-cli --cluster add-node $newslave ${var.redis_server}:${var.redis_port1} --cluster-slave -a ${var.redis_password}; done",
       "redis-cli --cluster rebalance ${var.redis_server}:${var.redis_port1} -a ${var.redis_password} --cluster-use-empty-masters",
       "echo '=== Cluster REDIS created from redis0 node... ==='",
-      "echo 'cluster info' | /usr/local/bin/redis-cli -c -a ${random_string.redis_password.result}",
-      "echo 'cluster nodes' | /usr/local/bin/redis-cli -c -a ${random_string.redis_password.result}",
+      "echo 'cluster info' | /usr/local/bin/redis-cli -c -h ${var.redis_server} -p ${var.redis_port1} -a ${random_string.redis_password.result}",
+      "echo 'cluster nodes' | /usr/local/bin/redis-cli -c -h ${var.redis_server} -p ${var.redis_port1} -a ${random_string.redis_password.result}",
     ]
   }
 }
