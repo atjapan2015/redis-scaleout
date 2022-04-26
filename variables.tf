@@ -50,11 +50,11 @@ variable "redis_deployment_type" {
 }
 
 variable "redis_server" {
-  default = "138.2.116.175"
+  default = ""
 }
 
 variable "redis_password" {
-  default = "redis"
+  default = ""
 }
 
 variable "redis_prefix" {
