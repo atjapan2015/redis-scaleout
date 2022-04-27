@@ -53,6 +53,10 @@ variable "redis_server" {
   default = ""
 }
 
+variable "redis_port" {
+  default = "6379"
+}
+
 variable "redis_password" {
   default = ""
 }

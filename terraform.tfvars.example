@@ -8,11 +8,11 @@ compartment_ocid        = "ocid1.compartment.ToDo"
 availablity_domain_name = "bxtG:AP-CHUNCHEON-1-AD-1"
 
 redis_deployment_type = "Master Slave" # ["Standalone", "Master Slave", "Redis Cluster"]
-redis_prefix = "myredis"
 redis_server = "ToDo"
+redis_port = "6379"
 redis_password = "ToDo"
-grafana_password = "ToDo"
-redis_version = "5.0.9"
+redis_prefix = "myredis"
+redis_version = "5.0.14"
 redis_config_is_use_rdb = true
 redis_config_is_use_aof = false
 is_enable_backup = true
@@ -21,6 +21,7 @@ s3_access_key = "ToDo"
 s3_secret_key = "ToDo"
 is_use_prometheus = true
 is_use_grafana = true
+grafana_password = "ToDo"
 
 virtual_network_redis_vcn_id = "ToDO"
 subnet_redis_subnet_id = "ToDO"
