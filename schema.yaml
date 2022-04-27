@@ -152,7 +152,7 @@ variables:
   redis_port:
     type: string
     required: true
-    default: ""
+    default: "6379"
     title: "Redis master server port"
     description: "Input redis master server port to which now server will be added."
 
@@ -176,8 +176,6 @@ variables:
     title: "Redis deployment type?"
     description: "Choose redis deployment type to be deployed."
     enum:
-      - "Standalone"
-      - "Master Slave"
       - "Redis Cluster"
     default: "Redis Cluster"
 
