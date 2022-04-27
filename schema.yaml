@@ -241,10 +241,10 @@ variables:
   redis_rediscluster_shared_count:
     type: number
     required: true
-    minimum: 3
-    maximum: 4
+    minimum: 1
+    maximum: 1
     multipleOf: 1
-    default: 3
+    default: 1
     title: "Number of redis master nodes"
     description: "Choose number of redis master nodes."
     visible:
@@ -322,16 +322,15 @@ variables:
       and:
         - redis_config_is_use_rdb
 
-        - s3_bucket_name
-        - s3_access_key
-        - s3_secret_key
-
   s3_bucket_name:
     type: string
     required: true
     default: "RedisBucket"
     title: "S3/S3 Compatibility Bucket Name"
     description: "Name of S3/S3 Compatibility Bucket. (You must create it in advance)."
+    visible:
+      and:
+        - is_enable_backup
 
   s3_access_key:
     type: string
@@ -339,6 +338,9 @@ variables:
     default: ""
     title: "S3/S3 Compatibility Bucket access key"
     description: "S3/S3 Compatibility Bucket access key. (You must create it in advance)."
+    visible:
+      and:
+        - is_enable_backup
 
   s3_secret_key:
     type: password
@@ -346,6 +348,9 @@ variables:
     default: ""
     title: "S3/S3 Compatibility Bucket secret key"
     description: "S3/S3 Compatibility Bucket secret key. (You must create it in advance)."
+    visible:
+      and:
+        - is_enable_backup
 
   is_use_prometheus:
     type: boolean
