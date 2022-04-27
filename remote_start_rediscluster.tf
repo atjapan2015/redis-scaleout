@@ -120,24 +120,3 @@ resource "null_resource" "redis_master_add_masternode_rediscluster" {
     ]
   }
 }
-
-#resource "null_resource" "redis_master_register_grafana_rediscluster" {
-#  depends_on = [null_resource.redis_master_create_cluster_rediscluster]
-#  count      = (var.redis_deployment_type == "Redis Cluster") ? 1 : 0
-#  provisioner "remote-exec" {
-#    connection {
-#      type        = "ssh"
-#      user        = "opc"
-#      host        = data.oci_core_vnic.redis_master_vnic[0].public_ip_address
-#      private_key = tls_private_key.public_private_key_pair.private_key_pem
-#      script_path = "/home/opc/myssh.sh"
-#      agent       = false
-#      timeout     = "10m"
-#    }
-#    inline = [
-#      "if [[ ${var.is_use_grafana} == true ]] ; then echo '=== Register REDIS Datasource to Grafana... ==='; fi",
-#      "if [[ ${var.is_use_grafana} == true ]] ; then curl -X DELETE http://${var.grafana_user}:${var.grafana_password}@${var.grafana_server}:${var.grafana_port}/api/datasources/name/${data.oci_core_vnic.redis_master_vnic[0].hostname_label}.${data.oci_core_subnet.redis_subnet.dns_label}; fi",
-#      "if [[ ${var.is_use_grafana} == true ]] ; then curl -d '{\"name\":\"${data.oci_core_vnic.redis_master_vnic[0].hostname_label}.${data.oci_core_subnet.redis_subnet.dns_label}\",\"type\":\"redis-datasource\",\"typeName\":\"Redis\",\"typeLogoUrl\":\"public/plugins/redis-datasource/img/logo.svg\",\"access\":\"proxy\",\"url\":\"redis://${data.oci_core_vnic.redis_master_vnic[0].private_ip_address}:${var.redis_port1}\",\"password\":\"\",\"user\":\"\",\"database\":\"\",\"basicAuth\":false,\"isDefault\":false,\"jsonData\":{\"client\":\"cluster\"},\"secureJsonData\":{\"password\":\"${random_string.redis_password.result}\"},\"readOnly\":false}' -H \"Content-Type: application/json\" -X POST http://${var.grafana_user}:${var.grafana_password}@${var.grafana_server}:${var.grafana_port}/api/datasources; fi"
-#    ]
-#  }
-#}

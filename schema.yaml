@@ -399,6 +399,7 @@ variables:
     title: "Visualized by grafana?"
     description: "Choose whether to use grafana to visualize your metrics. (You must have an existing grafana already)."
     default: false
+    visible: false
 
   grafana_server:
     type: string
