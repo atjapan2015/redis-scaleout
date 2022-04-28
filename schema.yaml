@@ -35,10 +35,10 @@ variableGroups:
       and:
         - show_advanced
     variables:
+      - redis_prefix
       - redis_server
       - redis_port
       - redis_password
-      - redis_prefix
       - redis_version
       - redis_deployment_type
       - redis_standalone_master_count
