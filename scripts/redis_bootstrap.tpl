@@ -25,22 +25,15 @@ EOF
 sysctl -p
 
 # Install softwares
-%{ if redis_version == "6.0.16" ~}
-yum install -y wget devtoolset-11-gcc devtoolset-11-gcc-c++ devtoolset-11-binutils s3fs-fuse
-%{ else ~}
-yum install -y wget gcc s3fs-fuse
-%{ endif ~}
+while [[ ! -f /opt/rh/devtoolset-9/root/usr/bin/gcc ]] || [[ ! -f /usr/bin/s3fs ]]; do yum install -y wget devtoolset-9 s3fs-fuse; done
+source /opt/rh/devtoolset-9/enable
+echo "source /opt/rh/devtoolset-9/enable" >> /etc/profile
 
 # Download and compile Redis
 wget http://download.redis.io/releases/redis-${redis_version}.tar.gz
-tar xvzf redis-${redis_version}.tar.gz
+tar xvzf redis-${redis_version}.tar.gz && rm -rf redis-${redis_version}.tar.gz
 cd redis-${redis_version}
-
-%{ if redis_version == "6.0.16" ~}
-source /opt/rh/devtoolset-11/enable && make install
-%{ else ~}
 make install
-%{ endif ~}
 
 mkdir -p /u01/redis_data
 mkdir -p /var/log/redis/
@@ -70,6 +63,7 @@ appendonly yes
 %{ else ~}
 appendonly no
 %{ endif ~}
+maxmemory ${redis_maxmemory}
 requirepass ${redis_password}
 masterauth ${redis_password}
 EOF
@@ -153,10 +147,6 @@ echo "${s3_access_key}:${s3_secret_key}" > /root/.passwd-s3fs
 chmod 600 /root/.passwd-s3fs
 echo "${s3_bucket_name} /u01/redis_backup_snapshot fuse.s3fs _netdev,allow_other,nomultipart,use_path_request_style,endpoint=${region},url=https://${s3_namespace_name}.compat.objectstorage.${region}.oraclecloud.com/ 0 0" >> /etc/fstab
 s3fs ${s3_bucket_name} /u01/redis_backup_snapshot -o endpoint=${region} -o passwd_file=/root/.passwd-s3fs -o url=https://${s3_namespace_name}.compat.objectstorage.${region}.oraclecloud.com/ -o nomultipart -o use_path_request_style
-%{ endif ~}
-
-%{ if redis_version == "6.0.16" ~}
-echo "source /opt/rh/devtoolset-11/enable" >> /etc/profile
 %{ endif ~}
 
 sleep 10
