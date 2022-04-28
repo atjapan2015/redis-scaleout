@@ -8,15 +8,6 @@ EXTERNAL_IP=$(curl -s -m 10 http://whatismyip.akamai.com/)
 REDIS_CONFIG_FILE=/etc/redis.conf
 SENTINEL_CONFIG_FILE=/etc/sentinel.conf
 
-sleep 30
-
-# Install softwares
-%{ if redis_version == "6.0.16" ~}
-yum install -y wget devtoolset-11-gcc devtoolset-11-gcc-c++ devtoolset-11-binutils s3fs-fuse
-%{ else ~}
-yum install -y wget gcc s3fs-fuse
-%{ endif ~}
-
 # Setup firewall rules
 firewall-offline-cmd --zone=public --add-port=${redis_port1}/tcp
 firewall-offline-cmd --zone=public --add-port=${redis_port2}/tcp
@@ -32,6 +23,13 @@ net.core.somaxconn = 4096
 net.ipv4.tcp_max_syn_backlog = 4096
 EOF
 sysctl -p
+
+# Install softwares
+%{ if redis_version == "6.0.16" ~}
+yum install -y wget devtoolset-11-gcc devtoolset-11-gcc-c++ devtoolset-11-binutils s3fs-fuse
+%{ else ~}
+yum install -y wget gcc s3fs-fuse
+%{ endif ~}
 
 # Download and compile Redis
 wget http://download.redis.io/releases/redis-${redis_version}.tar.gz
@@ -161,4 +159,4 @@ s3fs ${s3_bucket_name} /u01/redis_backup_snapshot -o endpoint=${region} -o passw
 echo "source /opt/rh/devtoolset-11/enable" >> /etc/profile
 %{ endif ~}
 
-sleep 30
+sleep 10
