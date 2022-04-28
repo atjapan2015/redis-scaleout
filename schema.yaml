@@ -45,8 +45,9 @@ variableGroups:
       - redis_standalone_master_count
       - redis_masterslave_master_count
       - redis_masterslave_replica_count
-      - redis_rediscluster_shared_count
+      - redis_rediscluster_shard_count
       - redis_rediscluster_slave_count
+      - redis_maxmemory
       - redis_port1
       - redis_port2
       - sentinel_port
@@ -236,7 +237,7 @@ variables:
             - redis_deployment_type
             - "Master Slave"
 
-  redis_rediscluster_shared_count:
+  redis_rediscluster_shard_count:
     type: number
     required: true
     minimum: 1
@@ -265,6 +266,14 @@ variables:
         - eq:
             - redis_deployment_type
             - "Redis Cluster"
+
+  redis_maxmemory:
+    type: number
+    required: true
+    minimum: 1
+    multipleOf: 1
+    title: "Redis maxmemory"
+    description: "Input Redis maxmemory."
 
   redis_port1:
     type: number
