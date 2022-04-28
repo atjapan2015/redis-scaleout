@@ -68,6 +68,7 @@ resource "null_resource" "redis_master_master_list_rediscluster" {
       "echo '=== Starting Create Master List on redis0 node... ==='",
       "sleep 10",
       "echo -n '${data.oci_core_vnic.redis_master_vnic[count.index].private_ip_address}:${var.redis_port1} ' >> /home/opc/master_list_${count.index + 1}.sh",
+      "echo -n '${data.oci_core_vnic.redis_master_vnic[count.index].public_ip_address}:${var.redis_port1} ' >> /home/opc/master_public_list_${count.index + 1}.sh",
       "echo -n '' > /home/opc/replica_list_${count.index + 1}.sh",
       "echo '=== Started Create Master List on redis0 node... ==='"
     ]
@@ -111,7 +112,7 @@ resource "null_resource" "redis_master_add_masternode_rediscluster" {
     }
     inline = [
       "echo '=== Create REDIS CLUSTER from redis0 node... ==='",
-      "for i in {1..${var.redis_rediscluster_shard_count}}; do for newmaster in $(cat /home/opc/master_list_$i.sh); do sleep 10; sudo -u root /usr/local/bin/redis-cli --cluster add-node $newmaster ${var.redis_server}:${var.redis_port} -a \"${var.redis_password}\"; for newslave in $(cat /home/opc/replica_list_$i.sh); do sleep 10; sudo -u root /usr/local/bin/redis-cli --cluster add-node $newslave ${var.redis_server}:${var.redis_port} --cluster-slave --cluster-master-id $(echo 'cluster nodes' | redis-cli -c -h ${var.redis_server} -p ${var.redis_port} -a \"${var.redis_password}\" | grep $newmaster | awk '{print $1}') -a \"${var.redis_password}\"; done; done; done",
+      "for i in {1..${var.redis_rediscluster_shard_count}}; do for newmaster in $(cat /home/opc/master_public_list_$i.sh); do sleep 10; sudo -u root /usr/local/bin/redis-cli --cluster add-node $newmaster ${var.redis_server}:${var.redis_port} -a \"${var.redis_password}\"; for newslave in $(cat /home/opc/replica_list_$i.sh); do sleep 10; sudo -u root /usr/local/bin/redis-cli --cluster add-node $newslave ${var.redis_server}:${var.redis_port} --cluster-slave --cluster-master-id $(redis-cli -c -h ${var.redis_server} -p ${var.redis_port} -a \"${var.redis_password}\" cluster nodes | grep $(echo $newmaster|xargs) | awk '{print $1}') -a \"${var.redis_password}\"; done; done; done",
       "sudo -u root /usr/local/bin/redis-cli --cluster rebalance ${var.redis_server}:${var.redis_port} -a ${var.redis_password} --cluster-use-empty-masters",
       "echo '=== Cluster REDIS created from redis0 node... ==='",
       "echo 'cluster info' | sudo -u root /usr/local/bin/redis-cli -c -h ${var.redis_server} -p ${var.redis_port} -a ${var.redis_password}",
